@@ -66,7 +66,7 @@ unset color_prompt force_color_prompt
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1\n>"
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1\n$ "
     ;;
 *)
     ;;
@@ -130,7 +130,7 @@ case $TERM in
 esac
 
 # エイリアス
-alias ls='ls --color=auto'
+alias ls='ls -a --color=auto'
 alias so='source'
 alias vi='vim'
 alias vb='vim ~/.bashrc'
@@ -141,14 +141,13 @@ alias mkdir='mkdir -p'
 alias back='pushd'
 alias diff='diff -U1'
 alias gc='git commit -m'
-alias gitc='git commit -m '
 alias pyt='python'
-alias gits='git status'
 alias gita='git add'
 alias ga='git add'
 alias gp='git push'
 alias jn='jupyter notebook'
 alias slp='systemctl suspend'
+alias vless='/usr/share/vim/vim82/macros/less.sh'
 
 # see pickle file in terminal
 alias pcat='python -m pickle'
@@ -172,3 +171,19 @@ export PATH="~/original-shell-script:${PATH}"
 
 # BoostNoteのバスを通す
 export PATH="~/AppImage:${PATH}"
+. "$HOME/.cargo/env"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/hikaruy/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/hikaruy/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/hikaruy/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/hikaruy/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
