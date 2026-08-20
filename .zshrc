@@ -19,7 +19,7 @@ export PATH="$HOME/.local/bin:$PATH"
 # oh-my-zsh
 # ------------------------------------------------------------
 export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="candy"
+# ZSH_THEME="candy"
 
 # 自動更新は明示的に実行する（起動時に勝手に git pull させない）
 zstyle ':omz:update' mode disabled
@@ -165,7 +165,7 @@ export NVM_DIR="$HOME/.nvm"
 # プロンプト
 #   starship を使う場合は oh-my-zsh のテーマより後に置く（テーマは上書きされる）
 # ------------------------------------------------------------
-# command -v starship >/dev/null && eval "$(starship init zsh)"
+command -v starship >/dev/null && eval "$(starship init zsh)"
 
 # ------------------------------------------------------------
 # エディタ統合
