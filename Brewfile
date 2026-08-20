@@ -23,7 +23,6 @@ brew "hyperfine"    # ベンチマーク
 brew "tealdeer"     # tldr
 brew "jq"
 brew "yq"
-brew "lazygit"
 
 # gh: 認証トークンは Keychain に保存される。
 # ただし `gh auth login` で会社の GitHub Enterprise と個人アカウントを
