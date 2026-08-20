@@ -107,9 +107,41 @@ alias ga='git add'
 alias gc='git commit -m'
 alias gp='git push'
 
-# 注意: alias grep='rg' は設定しない。
-# オプション体系も既定挙動（再帰・gitignore 尊重・バイナリスキップ）も異なるため、
-# grep のつもりで打つと取りこぼす。rg はそのまま rg と打つ。
+# grep → ripgrep
+#   grep 自体は潰さない。オプション体系も既定挙動（再帰・.gitignore 尊重・
+#   バイナリスキップ）も異なり、grep のつもりで打つと取りこぼすため。
+#   rg はそのまま rg と打つ。
+# alias grep='rg'
+alias rgh='rg --hidden --no-ignore'    # .gitignore とドットファイルも対象
+
+# find → fd
+alias find='fd'
+alias fda='fd --hidden --no-ignore'    # .gitignore とドットファイルも対象
+
+# du / df
+alias du='dust'
+alias df='duf'
+
+# ps / top
+alias ps='procs'
+alias top='btop'
+alias htop='btop'
+
+# sed → sd
+#   sed 自体は潰さない（sd は置換専用で、-n や範囲指定などの体系が違う）
+alias sedre='sd'
+
+# man → tldr
+alias help='tldr'
+
+# json
+alias jl='jless'
+
+# 元のコマンドに戻したいとき
+alias ols='command ls'
+alias ocat='command cat'
+alias ogrep='command grep'
+alias ofind='command find'
 
 # ------------------------------------------------------------
 # 言語ランタイム
