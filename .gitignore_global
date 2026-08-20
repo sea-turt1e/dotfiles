@@ -1,0 +1,28 @@
+# ============================================================
+# 全リポジトリ共通の ignore（core.excludesfile）
+# 秘匿ファイルを git add -A で巻き込む事故を防ぐ
+# ============================================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*credentials*
+*secret*
+.aws/
+.netrc
+
+# macOS / エディタ
+.DS_Store
+.idea/
+*.swp
+*.swo
+.vscode/settings.json
+
+# Python
+__pycache__/
+.venv/
+venv/
+.ipynb_checkpoints/

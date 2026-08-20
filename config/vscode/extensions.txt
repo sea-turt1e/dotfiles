@@ -1,0 +1,107 @@
+# ============================================================
+# VS Code 拡張機能リスト
+#
+#   インストール: bash config/vscode/install-extensions.sh
+#   現在の状態を書き出す: code --list-extensions > /tmp/now.txt
+#
+# 拡張機能は「任意コードを実行するプログラム」。会社の端末では
+# 承認済みソフトウェアの扱いになる場合がある。追加する前に確認すること。
+# ============================================================
+
+# --- Python ---
+ms-python.python
+ms-python.vscode-pylance
+ms-python.debugpy
+ms-python.vscode-python-envs
+ms-python.isort                 # ruff に統合できる（重複機能）
+ms-python.mypy-type-checker
+charliermarsh.ruff
+
+# --- Jupyter ---
+ms-toolsai.jupyter
+ms-toolsai.jupyter-keymap
+ms-toolsai.jupyter-renderers
+ms-toolsai.vscode-jupyter-cell-tags
+ms-toolsai.vscode-jupyter-slideshow
+
+# --- Go / Rust ---
+golang.go
+rust-lang.rust-analyzer
+
+# --- Web / Vue ---
+vue.volar
+octref.vetur                    # Volar の前身。両方入れると競合するので削除を推奨
+dariofuzinato.vue-peek
+formulahendry.auto-close-tag
+formulahendry.auto-rename-tag
+esbenp.prettier-vscode          # ワークスペースの node_modules 内の prettier を実行しうる
+                                # → 素性不明の repo では Workspace Trust を「信頼しない」ままにする
+
+# --- Git / GitHub ---
+eamodio.gitlens
+mhutchie.git-graph
+github.vscode-github-actions
+github.vscode-pull-request-github
+
+# --- Docker / インフラ ---
+docker.docker
+ms-azuretools.vscode-docker
+ms-azuretools.vscode-containers
+ms-vscode.makefile-tools
+redhat.vscode-yaml
+
+# --- リモート開発 ---
+# 接続先のホストに VS Code Server が自動インストールされる。
+# 社外サーバや個人 VPS へ会社のコードを持ち出す経路になりうるので、
+# 接続先は会社が許可したホストに限ること。
+ms-vscode-remote.remote-ssh
+ms-vscode-remote.remote-ssh-edit
+ms-vscode-remote.remote-containers
+ms-vscode.remote-explorer
+
+# --- データベース ---
+# 接続情報を settings.json に平文で書かないこと（Settings Sync で外部へ出る）。
+# 拡張機能の Secret Storage / 接続時入力を使う。
+alexcvzz.vscode-sqlite
+neo4j-extensions.neo4j-for-vscode
+
+# --- データ閲覧 ---
+mechatroner.rainbow-csv
+janisdd.vscode-edit-csv
+
+# --- Markdown / ドキュメント ---
+yzhang.markdown-all-in-one
+yzane.markdown-pdf              # 初回実行時に Chromium をダウンロードする
+marp-team.marp-vscode
+zenn.zenn-preview
+tomoki1207.pdf
+
+# --- ローカルサーバ ---
+# 既定では他のインターフェースにも待ち受ける実装があるため、
+# settings.json で liveServer.settings.host を 127.0.0.1 に固定している。
+# 機能が重複しているのでどちらか一方に絞るのが望ましい。
+ritwickdey.liveserver
+ms-vscode.live-server
+
+# --- エディタ支援 ---
+usernamehw.errorlens
+gruntfuggly.todo-tree
+oderwat.indent-rainbow
+ow.vscode-subword-navigation
+samverschueren.final-newline
+
+# --- 日本語 ---
+ms-ceintl.vscode-language-pack-ja
+
+# ============================================================
+# AI 支援（会社利用では要確認）
+#
+# 編集中のコードを外部サービスへ送信する。会社が承認した経路・
+# テナントでのみ利用すること。承認が無い場合はインストールしない。
+# ============================================================
+anthropic.claude-code
+
+# GitHub Copilot は現在インストールされていない
+# （settings.json に github.copilot.* の設定だけが残っている状態）
+# github.copilot
+# github.copilot-chat

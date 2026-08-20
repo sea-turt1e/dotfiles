@@ -19,6 +19,10 @@ shopt -s histappend
 HISTSIZE=1000
 HISTFILESIZE=2000
 
+# 秘密情報を含みやすいコマンドは履歴に残さない。
+# HISTCONTROL=ignoreboth により「行頭スペース」でも記録を抑止できる（秘匿用）。
+HISTIGNORE='*TOKEN=*:*KEY=*:*SECRET=*:*PASSWORD=*:curl *Authorization*:* --password *'
+
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -118,8 +122,11 @@ fi
 
 
 
-#xselでpbcopyを使う
-alias pbcopy='xsel --clipboard --input'
+# xsel で pbcopy を使う（Linux 限定）
+# macOS には本物の pbcopy があるため、上書きすると壊れる。OS で分岐する。
+if [ "$(uname -s)" = "Linux" ] && command -v xsel >/dev/null 2>&1; then
+    alias pbcopy='xsel --clipboard --input'
+fi
 
 #端末のメッセージを英語にする
 export LANG=en_US
@@ -130,7 +137,10 @@ case $TERM in
 esac
 
 # エイリアス
-alias ls='ls --color=auto'
+# GNU ls 専用オプション。macOS の BSD ls では動かないので分岐する
+if [ "$(uname -s)" = "Linux" ]; then
+    alias ls='ls --color=auto'
+fi
 alias so='source'
 alias vi='vim'
 alias vb='vim ~/.bashrc'
@@ -160,15 +170,23 @@ if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
 
-# ngrokのPATHを通す
-export PATH="~/local/bin:${PATH}"
+# 注意: PATH に "~" をクォート付きで書くとチルダが展開されず、
+# カレントディレクトリ基準の相対パスとして解釈される。
+# 移動先のディレクトリに細工されたコマンドを置かれると実行してしまう
+# （PATH ハイジャック）。必ず $HOME を使い、存在確認してから追加する。
 
-# original-shell-scriptのPATH
-export PATH="~/original-shell-script:${PATH}"
+# ngrok の PATH を通す
+[ -d "$HOME/local/bin" ] && export PATH="$HOME/local/bin:${PATH}"
+
+# original-shell-script の PATH
+[ -d "$HOME/original-shell-script" ] && export PATH="$HOME/original-shell-script:${PATH}"
 
 # source ~/enhancd/init.sh
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-# BoostNoteのバスを通す
-export PATH="~/AppImage:${PATH}"
+# BoostNote のパスを通す（同上・$HOME を使う）
+[ -d "$HOME/AppImage" ] && export PATH="$HOME/AppImage:${PATH}"
+
+# --- 秘密情報はここに書かず ~/.bashrc.local に置く（.gitignore 済み） ---
+[ -f ~/.bashrc.local ] && . ~/.bashrc.local

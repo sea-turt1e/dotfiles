@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# ============================================================
+# 秘密情報の混入を止める pre-commit フック
+#
+#   git config core.hooksPath hooks     # このリポジトリで有効化
+#   （setup.sh が自動で設定する）
+#
+# 検出は簡易的なもの。gitleaks / trufflehog の代わりにはならないが、
+# 「API キーを .zshrc ごとコミットしてしまう」典型的な事故は防げる。
+# どうしても通したい場合のみ: git commit --no-verify
+# ============================================================
+set -uo pipefail
+
+patterns=(
+    'sk-[A-Za-z0-9_-]{20,}'                  # OpenAI 系
+    'sk-ant-[A-Za-z0-9_-]{20,}'              # Anthropic
+    'gh[pousr]_[A-Za-z0-9]{20,}'             # GitHub トークン
+    'AKIA[0-9A-Z]{16}'                       # AWS アクセスキー ID
+    'xox[baprs]-[A-Za-z0-9-]{10,}'           # Slack
+    'AIza[0-9A-Za-z_-]{30,}'                 # Google API キー
+    '-----BEGIN [A-Z ]*PRIVATE KEY-----'     # 秘密鍵
+    '(TOKEN|SECRET|PASSWORD|API_?KEY)[[:space:]]*=[[:space:]]*["'\''][^"'\'' ]{12,}'
+)
+
+staged="$(git diff --cached --name-only --diff-filter=ACM)"
+[ -z "$staged" ] && exit 0
+
+found=0
+while IFS= read -r file; do
+    [ -f "$file" ] || continue
+    for p in "${patterns[@]}"; do
+        if git diff --cached -U0 -- "$file" | grep -E '^\+' | grep -Eq -e "$p"; then
+            echo "秘密情報らしき文字列を検出: $file  (パターン: $p)" >&2
+            found=1
+        fi
+    done
+done <<< "$staged"
+
+# *.local はそもそもコミットしない
+if echo "$staged" | grep -Eq '(^|/)\.[^/]*\.local$|\.local$'; then
+    echo "*.local はマシン固有の秘密設定。コミットしないこと。" >&2
+    found=1
+fi
+
+if [ "$found" -ne 0 ]; then
+    echo "" >&2
+    echo "コミットを中止した。値は ~/.zshrc.local へ移すこと。" >&2
+    echo "誤検知なら git commit --no-verify で回避できる。" >&2
+    exit 1
+fi
+exit 0

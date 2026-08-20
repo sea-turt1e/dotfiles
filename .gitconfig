@@ -1,0 +1,86 @@
+# ============================================================
+# .gitconfig
+#
+# user.name / user.email はここに書かない。
+# 会社アカウントと個人アカウントの取り違え（社内コードを個人メールで
+# コミットする / OSS に会社メールを晒す）を防ぐため、
+# 識別情報は ~/.gitconfig.local と、下部の includeIf に分離する。
+# テンプレート: .gitconfig.local.example
+# ============================================================
+
+[core]
+	pager = delta
+	# 秘匿ファイルをうっかり追跡しないための共通 ignore
+	excludesfile = ~/.gitignore_global
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true       # n / N で差分ブロック間を移動
+	side-by-side = true
+	line-numbers = true
+
+[merge]
+	conflictstyle = zdiff3
+
+[pager]
+	branch = false
+
+[alias]
+	br = branch
+	st = status
+	ck = checkout
+	cm = commit -m
+	sw = switch
+
+[init]
+	defaultBranch = main
+
+[push]
+	default = simple
+	# 明示していないタグ・ブランチを巻き込んで push しない
+	followTags = false
+
+[credential]
+	# 認証情報は平文ではなく macOS Keychain に保存する
+	helper = osxkeychain
+
+# --- 安全側の既定 ---
+[transfer]
+	fsckObjects = true    # 壊れた/細工されたオブジェクトを受け取らない
+[fetch]
+	fsckObjects = true
+	prune = true
+[receive]
+	fsckObjects = true
+
+# git:// は暗号化も認証もされない。使わせない
+[protocol "git"]
+	allow = never
+# file:// 経由のサブモジュールを使った既知の攻撃を防ぐ
+[protocol "file"]
+	allow = user
+
+[url "https://github.com/"]
+	# git:// で書かれたリポジトリ URL を https に強制的に読み替える
+	insteadOf = git://github.com/
+
+[submodule]
+	# サブモジュールの更新を暗黙に走らせない（任意コード取得の経路になる）
+	recurse = false
+
+[help]
+	# タイプミスしたコマンドを勝手に実行しない
+	autocorrect = 0
+
+# ============================================================
+# 識別情報はここから読み込む
+#   ~/.gitconfig.local        : 既定（個人）
+#   ~/.gitconfig.work         : 会社リポジトリ用（~/work/ 配下で自動適用）
+# ============================================================
+[include]
+	path = ~/.gitconfig.local
+
+[includeIf "gitdir:~/work/"]
+	path = ~/.gitconfig.work

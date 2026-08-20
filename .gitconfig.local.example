@@ -1,0 +1,20 @@
+# ============================================================
+# ~/.gitconfig.local （テンプレート・個人アカウント用）
+#
+#   cp ~/dotfiles/.gitconfig.local.example ~/.gitconfig.local
+#
+# 会社用は同じ形式で ~/.gitconfig.work を作る。
+# ~/work/ 配下のリポジトリでは .gitconfig の includeIf により
+# 自動でそちらが適用される（クローン先を ~/work/ に揃えておくこと）。
+#
+# *.local は .gitignore 済み。~/.gitconfig.work も含めコミットしないこと。
+# ============================================================
+[user]
+	name  = your-name
+	email = you@example.com
+
+# 会社用ファイルでは署名鍵を分けることも検討する
+# [user]
+#	signingkey = ...
+# [commit]
+#	gpgsign = true

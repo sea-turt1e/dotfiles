@@ -1,0 +1,274 @@
+// ============================================================
+// VS Code 設定 (User settings.json)
+//
+//   実体: ~/Library/Application Support/Code/User/settings.json
+//   setup.sh がこのファイルへシンボリックリンクを張る。
+//
+// !! ここに秘密情報（API キー・プロキシ認証・DB 接続文字列）を書かない !!
+//    settings.json は Settings Sync で外部アカウントへ同期されうる。
+//    拡張機能の認証情報は Secret Storage（Keychain）を使うものを選ぶ。
+// ============================================================
+{
+    // ========================================================
+    // セキュリティ（会社利用のために追加した設定）
+    // ========================================================
+
+    // テレメトリを送らない。VS Code 本体のみが対象で、
+    // Copilot / Claude 等の拡張機能の送信はこれでは止まらない。
+    "telemetry.telemetryLevel": "off",
+
+    // Workspace Trust: 信頼していないフォルダを開いたとき、
+    // タスクの自動実行・一部拡張機能・デバッガを無効にする。
+    // 素性のわからないリポジトリを clone して開く際の最後の防御線なので
+    // 絶対に無効化しない（既定で有効だが、明示して事故を防ぐ）。
+    "security.workspace.trust.enabled": true,
+    "security.workspace.trust.untrustedFiles": "prompt",
+    "security.workspace.trust.banner": "always",
+    "security.workspace.trust.startupPrompt": "once",
+
+    // 秘匿ファイルを検索結果に出さない。
+    // 画面共有中に Cmd+Shift+F で認証情報を映す事故を防ぐ。
+    "search.exclude": {
+        "**/.env": true,
+        "**/.env.*": true,
+        "**/*.pem": true,
+        "**/*.key": true,
+        "**/*credentials*": true,
+        "**/*secret*": true,
+        "**/.aws": true,
+        "**/.ssh": true,
+        "**/node_modules": true,
+        "**/.venv": true
+    },
+    "files.watcherExclude": {
+        "**/.venv/**": true,
+        "**/node_modules/**": true,
+        "**/.git/objects/**": true
+    },
+
+    // Live Server をローカルループバックのみに束縛する。
+    // 既定では他のインターフェースにも待ち受けるため、
+    // 社内 LAN やカフェの Wi-Fi に作業中のソースを公開してしまう。
+    "liveServer.settings.host": "127.0.0.1",
+
+    // Settings Sync を使う場合、同期対象から外す設定。
+    // （そもそも会社アカウントと個人アカウントを取り違えないこと）
+    "settingsSync.ignoredSettings": [
+        "http.proxyAuthorization",
+        "http.proxy",
+        "-liveServer.settings.host"
+    ],
+
+    // 拡張機能の自動更新について:
+    //   有効のまま = 侵害された更新が自動で入るリスク
+    //   無効       = 脆弱性修正が入らないリスク
+    // 会社の方針に合わせて選ぶ。無効にする場合は月1回など手動更新を習慣化する。
+    // "extensions.autoUpdate": false,
+    // "extensions.autoCheckUpdates": false,
+
+    // プロキシ認証情報は平文で保存され同期される。ここには絶対に書かない。
+    "http.proxyAuthorization": null,
+
+    // ========================================================
+    // 外観
+    // ========================================================
+    "workbench.colorTheme": "Dark+",
+    "workbench.startupEditor": "none",
+    "workbench.editor.empty.hint": "hidden",
+    "workbench.externalBrowser": "chrome",
+    "editor.minimap.enabled": false,
+    "editor.cursorBlinking": "solid",
+    "workbench.colorCustomizations": {
+        "editorCursor.foreground": "#ff0000",
+        "terminalCursor.foreground": "#ff0000",
+        // "editor.selectionBackground": "#c979f7",
+        // "editor.selectionHighlightBackground": "#394185",
+        "editor.findMatchHighlightBackground": "#264eff",
+        "editor.findMatchBorder": "#ffffff",
+        "editor.findMatchBackground": "#ae00ff"
+    },
+
+    // ========================================================
+    // ウィンドウ・エディタ
+    // ========================================================
+    "window.openFoldersInNewWindow": "on",
+    "editor.largeFileOptimizations": false,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+
+    // ========================================================
+    // ターミナル
+    // ========================================================
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.cursorStyle": "line",
+    "terminal.integrated.scrollback": 10000,
+    "terminal.integrated.macOptionClickForcesSelection": true,
+    "terminal.integrated.tabs.enabled": false,
+    // ターミナルにフォーカスがある間も、これらのキーはシェルに渡さず
+    // VS Code 側で処理する（Ctrl+1〜4 のペイン移動を成立させるため）
+    "terminal.integrated.commandsToSkipShell": [
+        "workbench.action.focusActiveEditorGroup",
+        "claude-vscode.focus",
+        "workbench.action.terminal.focusAtIndex1",
+        "workbench.action.terminal.focusAtIndex2"
+    ],
+
+    // 選択しただけでクリップボードに入る。
+    // 注意: macOS のユニバーサルクリップボードが有効だと、
+    //       選択した社内コードが個人の iPhone / iPad に転送されうる。
+    //       システム設定 → 一般 → AirDrop と Handoff で Handoff を切るか、
+    //       会社の端末ではこの設定を false にすることを検討する。
+    "terminal.integrated.copyOnSelection": true,
+
+    // 【コメントアウト】複数行ペーストの警告を無効化していた。
+    // Web からコピーしたコマンドに改行が仕込まれていると、
+    // 確認なしでそのまま実行される（クリップボード経由の古典的な攻撃）。
+    // 警告は残しておくべきなので既定（auto）に戻した。
+    // "terminal.integrated.enableMultiLinePasteWarning": "never",
+
+    // ========================================================
+    // Git / GitHub
+    // ========================================================
+    // 定期的にリモートへ fetch する。開いている repo のリモート先へ
+    // 自動で通信が発生する点だけ意識しておく（社内 repo なら実害は薄い）。
+    "git.autofetch": true,
+    "git.ignoreRebaseWarning": true,
+
+    // 【コメントアウト】Sync（pull + push）の確認を省いていた。
+    // 確認なしで push されるため、会社のコードを誤ったリモートへ
+    // 送ってしまう事故を防げない。既定（確認する）に戻した。
+    // "git.confirmSync": false,
+
+    // 【コメントアウト】保護ブランチへの直接コミット警告を無効化していた。
+    // main への直コミットを事前に気づけるよう、既定（有効）に戻した。
+    // "github.branchProtection": false,
+
+    // ========================================================
+    // 言語別
+    // ========================================================
+    "[python]": {
+        // 拡張機能の Black Formatter を使う場合には必ず指定する
+        // 注意: ms-python.black-formatter は現在インストールされていない。
+        //       このままだと保存時フォーマットが失敗する。
+        //       入れるか、既にある charliermarsh.ruff に寄せる:
+        //       "editor.defaultFormatter": "charliermarsh.ruff"
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        // ファイルの保存時にフォーマットを自動実行する場合
+        "editor.formatOnSave": true
+    },
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[dockercompose]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "advanced",
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        },
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "[github-actions-workflow]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+
+    // ========================================================
+    // Python ツール
+    // ========================================================
+    // 注意: ms-python.flake8 / ms-python.black-formatter は未インストール。
+    //       ruff に統一するならこの2つの設定は不要になる。
+    "flake8.args": [
+        "--max-line-length=168",
+        "--ignore=E203,W503,W504"
+    ],
+    // 最大文字数などのオプション引数を指定する場合
+    "black-formatter.args": [
+        "--line-length=120"
+    ],
+    // "mypy-type-checker.args": [
+    //     "--warn-return-any",
+    //     "--no-implicit-optional",
+    //     // "--disallow-untyped-calls",
+    //     // "--disallow-untyped-defs",
+    //     "--ignore-missing-imports",
+    //     "--follow-imports=skip"
+    // ],
+
+    // ========================================================
+    // YAML / CloudFormation
+    // ========================================================
+    "yaml.customTags": [
+        "!And",
+        "!And sequence",
+        "!If",
+        "!If sequence",
+        "!Not",
+        "!Not sequence",
+        "!Equals",
+        "!Equals sequence",
+        "!Or",
+        "!Or sequence",
+        "!FindInMap",
+        "!FindInMap sequence",
+        "!Base64",
+        "!Join",
+        "!Join sequence",
+        "!Cidr",
+        "!Ref",
+        "!Sub",
+        "!Sub sequence",
+        "!GetAtt",
+        "!GetAZs",
+        "!ImportValue",
+        "!ImportValue sequence",
+        "!Select",
+        "!Select sequence",
+        "!Split",
+        "!Split sequence"
+    ],
+    "yaml.disableSchemaDetection": [
+        "**/.github/workflows/*.yml",
+        "**/.github/workflows/*.yaml",
+        "**/.gitea/workflows/*.yml",
+        "**/.gitea/workflows/*.yaml",
+        "**/.forgejo/workflows/*.yml",
+        "**/.forgejo/workflows/*.yaml"
+    ],
+
+    // ========================================================
+    // その他の拡張機能
+    // ========================================================
+    "makefile.configureOnOpen": true,
+    "docker.extension.enableComposeLanguageServer": false,
+    "docker.extension.dockerEngineAvailabilityPrompt": false,
+    "liveServer.settings.donotShowInfoMsg": true,
+
+    // ========================================================
+    // AI 支援（会社利用では要確認）
+    //
+    // これらの拡張機能は編集中のバッファ（＝社内コード）を外部サービスへ
+    // 送信する。会社が承認した経路・テナントでのみ有効にすること。
+    // 承認が取れていない場合は拡張機能ごと無効化するのが確実。
+    // ========================================================
+    "github.copilot.chat.localeOverride": "ja",
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "claudeCode.preferredLocation": "panel",
+    "claudeCode.selectedModel": "opus",
+
+    // 秘匿ファイルでは補完を無効にする例（言語 ID 単位で指定する）。
+    // .env を開いたまま補完が走ると、キーの断片が送信されうる。
+    // "github.copilot.enable": {
+    //     "*": true,
+    //     "plaintext": false,
+    //     "dotenv": false,
+    //     "properties": false
+    // },
+
+    "chat.viewSessions.orientation": "stacked"
+}

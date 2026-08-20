@@ -1,0 +1,29 @@
+# ============================================================
+# ~/.zshrc.local  （テンプレート）
+#
+# 使い方:
+#   cp ~/dotfiles/.zshrc.local.example ~/.zshrc.local
+#   chmod 600 ~/.zshrc.local
+#   # 中身を埋める
+#
+# このファイル自身（*.local）は .gitignore 済み。絶対にコミットしないこと。
+# ============================================================
+
+# --- API キー類 ---
+# 平文で環境変数に置くこと自体がリスク（子プロセスすべてから読める、
+# `ps eww` や クラッシュレポートに載る）。可能なら Keychain から都度取り出す:
+#
+#   # 保存（一度だけ。行頭スペースで履歴に残さない）
+#    security add-generic-password -a "$USER" -s OPENAI_API_KEY -w
+#   # 取り出し
+#   export OPENAI_API_KEY="$(security find-generic-password -a "$USER" -s OPENAI_API_KEY -w)"
+#
+# export OPENAI_API_KEY="..."
+# export ANTHROPIC_API_KEY="..."
+
+# --- 会社固有の設定（社内ホスト名・プロキシ・レジストリなど） ---
+# export HTTP_PROXY="..."
+# export HTTPS_PROXY="..."
+# export NO_PROXY="localhost,127.0.0.1,.internal"
+
+# --- 個人環境のみの alias ---

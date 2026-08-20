@@ -5,6 +5,22 @@ scriptencoding utf-8
 " Vim scritptにvimrcも含まれるので、日本語でコメントを書く場合は先頭にこの設定が必要になる
 
 "----------------------------------------------------------
+" セキュリティ
+"----------------------------------------------------------
+" modeline はファイル内のコメントから vim の設定を実行させる仕組みで、
+" 細工されたファイルを開くだけで攻撃が成立した実績がある。無効化する。
+set nomodeline
+set modelines=0
+
+" 秘匿ファイルを開いたときに、undo履歴・スワップ・バックアップ・viminfo に
+" 平文の断片を残さない
+augroup secure_files
+    autocmd!
+    autocmd BufNewFile,BufReadPre *.env,.env*,*.pem,*.key,*credentials*,*secret*
+        \ setlocal noundofile noswapfile nobackup nowritebackup viminfo=
+augroup END
+
+"----------------------------------------------------------
 " NeoBundle
 "----------------------------------------------------------
 if has('vim_starting')
@@ -12,9 +28,11 @@ if has('vim_starting')
     set runtimepath+=~/.vim/bundle/neobundle.vim/
 
     " NeoBundleが未インストールであればgit cloneする
+    " 注意: 元は git:// を使っていたが、git プロトコルは暗号化も認証もされず
+    " 中間者にプラグインコードを差し替えられる。必ず https:// を使う。
     if !isdirectory(expand("~/.vim/bundle/neobundle.vim/"))
         echo "install NeoBundle..."
-        :call system("git clone git://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim")
+        :call system("git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim")
     endif
 endif
 
